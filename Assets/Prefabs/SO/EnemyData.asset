@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10b8ad4aac3cb4072b50a1ab24538b02, type: 3}
+  m_Name: EnemyData
+  m_EditorClassIdentifier: 
+  _sprite: {fileID: 0}
+  _health: 10
+  _speed: 1
+  _damage: 1
+  _delay: 0.5
+  _duration: 0.5
+  _projectile: {fileID: 6202795342205682822, guid: 28434cb0a5fa744a7a9886127016078a, type: 3}
+  _projectileSpeed: 4
+  attackDirection: 01000000020000000300000000000000
