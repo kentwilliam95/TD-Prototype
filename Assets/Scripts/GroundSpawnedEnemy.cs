@@ -33,7 +33,7 @@ public class GroundSpawnedEnemy : Ground
         _counter -= Time.deltaTime;
         if (_counter <= 0)
         {
-            var enemy = GameController.Instance.SpawnEnemy(enemyPrefab, Top + Vector3.up,null);
+            var enemy = GameController.Instance.SpawnEnemy(enemyPrefab, Top,null);
             enemy.MoveTo(Top, GameController.Instance.GroundObjective.Top);
             _counter = spawnDuration;
             _totalSpawned += 1;

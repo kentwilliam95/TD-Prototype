@@ -5,7 +5,6 @@ using UnityEngine.AI;
 
 public class Entity : MonoBehaviour
 {
-    //Todo: reduce the usage of new state 
     public struct Data
     {
         public float health;
@@ -19,10 +18,11 @@ public class Entity : MonoBehaviour
         public Projectile _projectile;
         public float _projectileSpeed;
 
+        public List<Ground> listMovement;
         public Vector3 _endLocation;
         public Entity _target;
     }
-    
+
     #region States
 
     public enum State
@@ -43,6 +43,9 @@ public class Entity : MonoBehaviour
 
     #endregion
 
+    protected CustomAgent _customAgent;
+    public CustomAgent CAgent => _customAgent;
+    
     protected StateMachine<Entity> _stateMachine;
     protected bool isGameFinish;
     protected RaycastHit[] _hitResult;
@@ -55,6 +58,17 @@ public class Entity : MonoBehaviour
 
     protected bool isInitialize;
     protected Ground _ground;
+    public Ground Ground
+    {
+        get
+        {
+            if (_ground == null)
+                UpdateGroundIndex();
+            
+            return _ground;   
+        }
+    }
+
     [HideInInspector] public Data entityData;
     public bool IsDead => entityData.health <= 0;
 
@@ -63,9 +77,6 @@ public class Entity : MonoBehaviour
 
     protected GameController _controller;
     public GameController GameController => _controller;
-
-    [SerializeField] protected NavMeshAgent _agent;
-    public NavMeshAgent Agent => _agent;
 
     [SerializeField] protected UnitDataSO _unitSO;
     public UnitDataSO UnitSO => _unitSO;
@@ -83,15 +94,16 @@ public class Entity : MonoBehaviour
     private void OnDestroy()
     {
         isInitialize = false;
-        GameController.OnStateChanged -= OnStateChanged;
     }
 
     protected virtual void Awake()
     {
-        SetupInternalData();
         _stateMachine = new StateMachine<Entity>(this);
         _hitResult = new RaycastHit[8];
         _animController.Play(AnimationController.AnimationType.Idle);
+        _customAgent = new CustomAgent();
+        
+        SetupInternalData();
     }
 
     public virtual void Initialize(GameController controller)
@@ -100,17 +112,13 @@ public class Entity : MonoBehaviour
         isInitialize = true;
         _animController.Initialize();
         _stateMachine.ChangeState(new StateIdle());
-        GameController.OnStateChanged += OnStateChanged;
     }
 
-    private void OnStateChanged()
+    public void GameOver()
     {
         isGameFinish = GameController.Instance.GameState == GameController.State.End;
-        if (_agent != null)
-        {
-            _agent.isStopped = true;
-            PlayAnimation(AnimationController.AnimationType.Idle);
-        }
+        _customAgent.Stop();
+        PlayAnimation(AnimationController.AnimationType.Idle);
     }
 
     private void SetupInternalData()
@@ -126,41 +134,39 @@ public class Entity : MonoBehaviour
             _delay = _unitSO._delay,
             _duration = _unitSO._duration,
             _projectile = _unitSO._projectile,
-            _projectileSpeed = _unitSO._projectileSpeed
+            _projectileSpeed = _unitSO._projectileSpeed,
+            listMovement = new List<Ground>()
         };
 
-        if (_agent)
-            _agent.speed = _unitSO._speed;
+        _customAgent.Speed = _unitSO._speed;
     }
 
     protected virtual void Update()
     {
         if (!isInitialize || isGameFinish)
             return;
-
+        
         UpdateGroundIndex();
+        _customAgent?.Update();
         _stateMachine.OnUpdate();
 
 #if UNITY_EDITOR
         _debugText = $"Ground Index: {_groundIndex1D}, {_groundIndex2D}";
-        if (_agent && _agent.isOnNavMesh)
+        if (_customAgent != null)
         {
-            _debugText += $"\n isStop: {_agent.isStopped}\n path Stale: {_agent.isPathStale}";
-            _debugText += $"\n{_agent.pathStatus}";
+            _debugText += $"\n isStop: {_customAgent.IsStopped}";
+            _debugText += $"\n{_customAgent.PathStatus}";
         }
-
+        
+        _debugText += $"\nVelocity:{_customAgent.Velocity}";
+        _debugText += $"\nforward:{transform.forward}";
         _debugText += $"\nState: {_stateMachine.CurrentState.ToString()}";
 #endif
     }
 
     public void MoveTo(Vector3 start, Vector3 end)
     {
-        entityData._endLocation = end;
-        var path = new NavMeshPath();
-        bool res = Agent.CalculatePath(entityData._endLocation, path);
-        Agent.SetPath(path);
-
-        // ChangeState(new StateMove());
+        _customAgent.Initialize(this, end);
         ChangeState(State.Move);
     }
 
@@ -195,18 +201,12 @@ public class Entity : MonoBehaviour
 
     public void StartAgent()
     {
-        if (!_agent)
-            return;
-
-        _agent.speed = _unitSO._speed;
+        _customAgent.Start();
     }
 
     public void StopAgent()
     {
-        if (!_agent)
-            return;
-
-        _agent.speed = 0;
+        _customAgent.Stop();
     }
 
     private void UpdateGroundIndex()
@@ -218,7 +218,7 @@ public class Entity : MonoBehaviour
         _ground = newGround;
         _groundIndex1D = _ground.Index1D;
         _groundIndex2D = _ground.Index2D;
-
+        
         OnGroundChanged?.Invoke();
     }
 
@@ -270,11 +270,6 @@ public class Entity : MonoBehaviour
             _animController.Play(animationType);
     }
 
-    public void RegisterAnActionOnAnimation(AnimationController.AnimationType animationType, System.Action onTrigger)
-    {
-        _animController.RegisterAnAction(animationType, onTrigger);
-    }
-
     public bool IsStandingOnTheSameGround(Ground ground)
     {
         return _ground == ground;
@@ -317,13 +312,12 @@ public class Entity : MonoBehaviour
 
     public bool CheckNearObjective()
     {
-        if (Agent.remainingDistance <= 0.2f)
+        if (_ground is GroundObjective)
         {
-            Ground ground = GameController.GetGround(Index2D);
-            if (ground is GroundObjective)
-            {
+            var diff = _ground.Top - transform.position;
+            var dist = diff.magnitude;
+            if (dist <= 0.2f)
                 return true;
-            }
         }
 
         return false;

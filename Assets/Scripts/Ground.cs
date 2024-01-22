@@ -44,10 +44,12 @@ public class Ground : MonoBehaviour
     protected bool isNavmeshSetup;
     protected bool isGameFinish;
 
-    [ReadOnly] [SerializeField] private Vector3 _center;
+    [ReadOnly] 
+    [SerializeField] private Vector3 _center;
     public Vector3 Center => _center;
 
-    [ReadOnly] [SerializeField] private Vector3 _top;
+    [ReadOnly] 
+    [SerializeField] private Vector3 _top;
     public Vector3 Top => _top;
 
     private MaterialPropertyBlock _mbp;
@@ -89,11 +91,9 @@ public class Ground : MonoBehaviour
 
         gameObject.SetActive(true);
         isInitialized = true;
-
-        GameController.OnStateChanged += OnStateChanged;
     }
 
-    private void OnStateChanged()
+    public void GameOver()
     {
         isGameFinish = GameController.Instance.GameState == GameController.State.End;
     }

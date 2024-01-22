@@ -10,6 +10,9 @@ public class StateAttackandMove : StateAttack
 
     protected override void OnAttackTrigger()
     {
+        if (ent == null || ent.entityData._target == null)
+            return;
+        
         isTriggered = true;
         Reset();
 
@@ -25,6 +28,15 @@ public class StateAttackandMove : StateAttack
         //TODO: Add check condition when arrived at destination
 
         base.UpdateState();
+        if (ent.entityData._target.IsDead)
+        {
+            ent.entityData._target = null;
+            if (ent is Enemy)
+                ent.ChangeState(Entity.State.Move);
+            else if (ent is Unit)
+                ent.ChangeState(Entity.State.Idle);
+        }
+        
         UpdateWalkState();
         UpdateStateToMove();
     }
@@ -35,7 +47,6 @@ public class StateAttackandMove : StateAttack
         if (enemy != null && !enemy.IsDead)
         {
             ent.entityData._target = enemy;
-            // ent.ChangeState(new StateAttack());
             ent.ChangeState(Entity.State.Attack);
         }
     }
@@ -53,10 +64,8 @@ public class StateAttackandMove : StateAttack
         {
             ent.entityData._target = null;
             if (ent is Enemy)
-                // ent.ChangeState(new StateMove());
                 ent.ChangeState(Entity.State.Move);
             else if (ent is Unit)
-                // ent.ChangeState(new StateIdle());
                 ent.ChangeState(Entity.State.Idle);
         }
         else

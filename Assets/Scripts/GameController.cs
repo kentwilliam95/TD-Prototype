@@ -15,8 +15,6 @@ public class GameController : MonoBehaviour
     public static Vector3Int[] NavmeshLinkDirections = new Vector3Int[]
         { Vector3Int.right, Vector3Int.forward, Vector3Int.left, Vector3Int.back };
 
-    private static string mapName;
-
     private static GameController _instance;
     public static GameController Instance => _instance;
     public static event Action OnStateChanged;
@@ -28,7 +26,7 @@ public class GameController : MonoBehaviour
         End,
     }
 
-    private Ground _spawnedObjective;    
+    private Ground _spawnedObjective;
 
     private int _playerUnitCurrency;
     private float _unitCurrencyCounter;
@@ -52,7 +50,7 @@ public class GameController : MonoBehaviour
 
     [HideInInspector] public Vector2Int _size;
 
-    [TextArea(5, 10)][SerializeField] private string _debugText;
+    [TextArea(5, 10)] [SerializeField] private string _debugText;
 
     private void Awake()
     {
@@ -69,9 +67,11 @@ public class GameController : MonoBehaviour
         TrEditorContainer.gameObject.SetActive(false);
         _gameState = State.Starting;
 
-        var map = Resources.Load<MapDataSO>("Map/" + mapName);
-        LoadFromMapDataSO(map);
-        mapName = string.Empty;
+        // var map = Resources.Load<MapDataSO>("Map/" + mapName);
+        // LoadFromMapDataSO(mapso);
+        // mapName = string.Empty;
+
+        LoadFromMapDataSO(_mapDataSo);
     }
 
     private void Update()
@@ -89,7 +89,7 @@ public class GameController : MonoBehaviour
             return;
 
         UpdateWinCondition();
-        
+
         _unitCurrencyCounter += Time.deltaTime * 5;
         if (_unitCurrencyCounter >= 1)
         {
@@ -105,17 +105,17 @@ public class GameController : MonoBehaviour
     {
         if (_totalKill < _maxKill)
             return;
-        
+
         _gameState = State.End;
-        _ui.ShowWin();        
+        _ui.ShowWin();
     }
 
     private void OnUnitPlaced(UnitDataSO so, Ground ground)
-    {        
+    {
         var currency = _playerUnitCurrency - so._cost;
         if (currency < 0)
             return;
-        
+
         _playerUnitCurrency = currency;
         SpawnUnit(so, ground.Top);
     }
@@ -242,10 +242,9 @@ public class GameController : MonoBehaviour
 
     //TODO: use object pooling rather that instantiate
     public Enemy SpawnEnemy(Enemy prefab, Vector3 pos, Action onComplete)
-    {        
+    {
         Enemy enemy = Instantiate(prefab);
         enemy.transform.position = pos;
-        enemy.Agent.Warp(pos);
         enemy.OnArrivedAtDestination = OnEnemyArrivedAtDestination;
         enemy.onDead = EnemyOnKilled;
         RegisterEntity(enemy);
@@ -269,6 +268,12 @@ public class GameController : MonoBehaviour
             _gameState = State.End;
             OnStateChanged?.Invoke();
             _ui.ShowGameOver();
+            
+            for (int i = _spawnedEntity.Count - 1; i >= 0; i--)
+                _spawnedEntity[i].GameOver();
+
+            for (int i = _spawnedGround.Count - 1; i >= 0; i--)
+                _spawnedGround[i].GameOver();
         }
     }
 
@@ -278,16 +283,7 @@ public class GameController : MonoBehaviour
         var entity = Instantiate(so.prefab);
         entity.transform.position = position;
 
-        if (entity.Agent)
-            entity.Agent.Warp(position);
-
         RegisterEntity(entity);
         return entity;
-    }
-
-    public void LoadMapFromRuntime(int num)
-    {
-        mapName = "map " + num;
-        SceneManager.LoadScene(SCENEGAME);
     }
 }

@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10b8ad4aac3cb4072b50a1ab24538b02, type: 3}
   m_Name: EnemyData
   m_EditorClassIdentifier: 
+  prefab: {fileID: 0}
   _sprite: {fileID: 0}
+  _cost: 0
   _health: 10
-  _speed: 1
+  _speed: 3
   _damage: 1
   _delay: 0.5
   _duration: 0.5
