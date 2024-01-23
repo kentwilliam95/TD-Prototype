@@ -11,13 +11,19 @@ public class UIUnitButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
     private RaycastHit[] hitResult = new RaycastHit[1];
     private Ground _selectedGround;
     private GameController _controller;
+    private Entity _spawnedEntity;
+    private float _clickDuration = 0.2f;
+    private float _timeCache;
+
     public UnitDataSO _unitSO;
     public TextMeshProUGUI _textCost;
     public CanvasGroup _canvasGroup;
-    
-    public Action<UnitDataSO, Ground> onUnitPlaced;
-    
-    public void Initialize(GameController gameController, Action<UnitDataSO, Ground> onUnitPlaced)
+
+    public Action<UIGameController.PlacedUnit> onUnitPlaced;
+    public Action onSelected;
+    public Action<UnitDataSO> onButtonClicked;
+
+    public void Initialize(GameController gameController, Action<UIGameController.PlacedUnit> onUnitPlaced)
     {
         _controller = gameController;
         _textCost.text = _unitSO._cost.ToString();
@@ -34,36 +40,44 @@ public class UIUnitButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if(_controller.GameState == GameController.State.End)
+        _timeCache = Time.time;
+        if (_controller.GameState == GameController.State.End)
             return;
-        
+
+        if (_spawnedEntity == null)
+            _spawnedEntity = SpawnUnit();
+
+        _spawnedEntity.gameObject.SetActive(false);
         _selectedGround = null;
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if(_controller.GameState == GameController.State.End)
-            return;
+        if (HandleClick())
+            return;   
         
-        if(!_selectedGround)
+        Debug.Log("Pointer Up");
+        if (_controller.GameState == GameController.State.End)
             return;
-        
+
+        if (!_selectedGround)
+            return;
+
         _selectedGround.SetColor(Color.green);
-        onUnitPlaced?.Invoke(_unitSO, _selectedGround);
-        
+        onUnitPlaced?.Invoke(new UIGameController.PlacedUnit() { _unitSO = _unitSO, _ground = _selectedGround , _spawnedEntity = _spawnedEntity, _uiButton = this});
+
         _selectedGround = null;
-        gameObject.SetActive(false);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        if(_controller.GameState == GameController.State.End)
+        if (_controller.GameState == GameController.State.End)
             return;
-        
+
         var cam = CameraController.Instance.Camera;
-        
+
         var ray = cam.ScreenPointToRay(eventData.position);
-        int hitCount = Physics.RaycastNonAlloc(ray, hitResult, 25f, GameController.LayerMaskGround);
+        int hitCount = Physics.RaycastNonAlloc(ray, hitResult, 25f, Global.LayerMaskGround);
 
         for (int i = 0; i < hitCount; i++)
         {
@@ -72,14 +86,39 @@ public class UIUnitButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
             {
                 if (ground is GroundObjective || ground is GroundSpawnedEnemy)
                     return;
-                
-                var isValidPlacement = _controller.CheckIfThereIsAnEntityOnGround(ground, GameController.TEAMALLY);
+
+                var isValidPlacement = _controller.CheckIfThereIsAnEntityOnGround(ground, Global.TEAMALLY);
                 if (!isValidPlacement)
+                {
+                    _spawnedEntity.transform.position = ground.Top;
                     _selectedGround = ground;
+                    _spawnedEntity.gameObject.SetActive(true);
+                }
             }
         }
-        
+
         if (hitCount == 0)
             _selectedGround = null;
+    }
+
+    private bool HandleClick()
+    {
+        if (Time.time - _timeCache <= _clickDuration)
+        {
+            Debug.Log("Clicked!");
+            this.onButtonClicked?.Invoke(_unitSO);
+            return true;
+        }
+
+        return false;
+    }
+
+    private Entity SpawnUnit()
+    {
+        return Instantiate(_unitSO.prefab);
+    }
+
+    private void DestroyUnit()
+    {
     }
 }

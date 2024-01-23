@@ -43,7 +43,7 @@ public class StateAttackandMove : StateAttack
 
     private void UpdateStateToMove()
     {
-        Entity enemy = ent.CheckIsEnemyOnTheSameGround(ent, GameController.TEAMALLY);
+        Entity enemy = ent.CheckIsEnemyOnTheSameGround(ent, Global.TEAMALLY);
         if (enemy != null && !enemy.IsDead)
         {
             ent.entityData._target = enemy;

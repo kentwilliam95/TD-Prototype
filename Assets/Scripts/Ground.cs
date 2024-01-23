@@ -121,7 +121,7 @@ public class Ground : MonoBehaviour
         {
             var rayDirection = GameController.NavmeshLinkDirections[i];
             int hitCount =
-                Physics.RaycastNonAlloc(_center, rayDirection, hitResult, 2f, GameController.LayerMaskGround);
+                Physics.RaycastNonAlloc(_center, rayDirection, hitResult, 2f, Global.LayerMaskGround);
 
             if (hitCount <= 0)
                 continue;

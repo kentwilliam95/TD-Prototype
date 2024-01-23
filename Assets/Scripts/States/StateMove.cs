@@ -24,7 +24,7 @@ public class StateMove : IState<Entity>
         }
 
         //Prioritize Enemy on the same ground 
-        Entity enemy = t.CheckIsEnemyOnTheSameGround(t, GameController.TEAMALLY);
+        Entity enemy = t.CheckIsEnemyOnTheSameGround(t, Global.TEAMALLY);
         if (enemy != null && !enemy.IsDead)
         {
             t.entityData._target = enemy;
@@ -37,7 +37,7 @@ public class StateMove : IState<Entity>
         }
 
         // if there is no enemy on the same ground check for enemy on different attack range
-        enemy = t.CheckEnemyInRange(t, GameController.TEAMALLY);
+        enemy = t.CheckEnemyInRange(t, Global.TEAMALLY);
         if (enemy != null && !enemy.IsDead)
         {
             t.entityData._target = enemy;

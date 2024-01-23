@@ -72,6 +72,9 @@ public class Entity : MonoBehaviour
     [HideInInspector] public Data entityData;
     public bool IsDead => entityData.health <= 0;
 
+    [SerializeField] private Transform _camPosition;
+    public Transform CamPosition => _camPosition;
+    
     protected int _team;
     public int Team => _team;
 
@@ -228,7 +231,7 @@ public class Entity : MonoBehaviour
         var arr = System.Buffers.ArrayPool<RaycastHit>.Shared.Rent(4);
         int hitCount =
             Physics.RaycastNonAlloc(transform.position + Vector3.up * 0.25f, Vector3.down, arr, 1f,
-                GameController.LayerMaskGround);
+                Global.LayerMaskGround);
 
         for (int i = 0; i < hitCount; i++)
         {

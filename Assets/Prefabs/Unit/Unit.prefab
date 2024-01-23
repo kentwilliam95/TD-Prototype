@@ -32,6 +32,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2405070726034598132}
+  - {fileID: 1213937559740128605}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8813704504201360332
@@ -46,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7d164a4802be49939be1f47bd956f0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _agent: {fileID: 0}
+  _camPosition: {fileID: 1213937559740128605}
   _unitSO: {fileID: 11400000, guid: 3c184485b16944b578212f09d8866db1, type: 2}
   _animController: {fileID: 72625287388669881}
   _debugText: 
@@ -66,6 +67,37 @@ MonoBehaviour:
   _timingData:
   - _animationType: 1
     _timing: {fileID: 11400000, guid: 8f085e9c8fc85439ca4ac3b69575e637, type: 2}
+--- !u!1 &7022984313890299711
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1213937559740128605}
+  m_Layer: 0
+  m_Name: CamPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1213937559740128605
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7022984313890299711}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 5.89, z: -5.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7140759149141963790}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2804122335769448223
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -114,10 +146,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7813590141776298306, guid: 786fac7170573431a9f628a047050644, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 801d497d7e7e8426180fe8380277cbbc, type: 2}
     - target: {fileID: 919132149155446097, guid: 786fac7170573431a9f628a047050644, type: 3}
       propertyPath: m_Name
       value: Happy Idle
       objectReference: {fileID: 0}
+    - target: {fileID: 5822821947120931875, guid: 786fac7170573431a9f628a047050644, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: c6507a4b9ae374ca39db106b81300bce, type: 2}
     - target: {fileID: 5866666021909216657, guid: 786fac7170573431a9f628a047050644, type: 3}
       propertyPath: m_Controller
       value: 

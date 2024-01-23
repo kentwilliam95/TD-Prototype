@@ -24,20 +24,20 @@ public class GroundSpawnedEnemy : Ground
     
     public void Update()
     {
-        if (!isInitialized || !isNavmeshSetup || isGameFinish)
-            return;
-        
-        if(_totalSpawned >= _totalEnemy)
-            return;
-        
-        _counter -= Time.deltaTime;
-        if (_counter <= 0)
-        {
-            var enemy = GameController.Instance.SpawnEnemy(enemyPrefab, Top,null);
-            enemy.MoveTo(Top, GameController.Instance.GroundObjective.Top);
-            _counter = spawnDuration;
-            _totalSpawned += 1;
-        }
+        // if (!isInitialized || !isNavmeshSetup || isGameFinish)
+        //     return;
+        //
+        // if(_totalSpawned >= _totalEnemy)
+        //     return;
+        //
+        // _counter -= Time.deltaTime;
+        // if (_counter <= 0)
+        // {
+        //     var enemy = GameController.Instance.SpawnEnemy(enemyPrefab, Top,null);
+        //     enemy.MoveTo(Top, GameController.Instance.GroundObjective.Top);
+        //     _counter = spawnDuration;
+        //     _totalSpawned += 1;
+        // }
     }
 
     public override string GetSaveData()

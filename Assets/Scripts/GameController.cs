@@ -6,12 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    public const string SCENEGAME = "SampleScene";
-    public const string LAYERMASKGROUND = "Ground";
-    public const int TEAMALLY = 1;
-    public const int TEAMENEMY = 2;
-    public static LayerMask LayerMaskGround;
-
     public static Vector3Int[] NavmeshLinkDirections = new Vector3Int[]
         { Vector3Int.right, Vector3Int.forward, Vector3Int.left, Vector3Int.back };
 
@@ -57,20 +51,21 @@ public class GameController : MonoBehaviour
         _instance = this;
         _spawnedEntity = new List<Entity>();
         _spawnedGround = new List<Ground>();
-        LayerMaskGround = LayerMask.GetMask(LAYERMASKGROUND);
-        _playerLifes = 3;
+        _playerLifes = Global.TOTALLIVES;
+        Global.Init();
         System.Buffers.ArrayPool<RaycastHit>.Create(100, 10);
+    }
+
+    private void OnDestroy()
+    {
+        
     }
 
     private void Start()
     {
         TrEditorContainer.gameObject.SetActive(false);
         _gameState = State.Starting;
-
-        // var map = Resources.Load<MapDataSO>("Map/" + mapName);
-        // LoadFromMapDataSO(mapso);
-        // mapName = string.Empty;
-
+        
         LoadFromMapDataSO(_mapDataSo);
     }
 
@@ -110,14 +105,14 @@ public class GameController : MonoBehaviour
         _ui.ShowWin();
     }
 
-    private void OnUnitPlaced(UnitDataSO so, Ground ground)
+    private void OnUnitPlacedOnGroundAndFinishSetup(UIGameController.PlacedUnit unit)
     {
-        var currency = _playerUnitCurrency - so._cost;
+        var currency = _playerUnitCurrency - unit._unitSO._cost;
         if (currency < 0)
             return;
 
-        _playerUnitCurrency = currency;
-        SpawnUnit(so, ground.Top);
+        _playerUnitCurrency = currency; 
+        SpawnUnit(unit._unitSO, unit._ground.Top).transform.forward = unit._unitDirection;
     }
 
     public void RegisterEntity(Entity ent)
@@ -146,7 +141,7 @@ public class GameController : MonoBehaviour
         StartCoroutine(LoadMapProgress(so, () =>
         {
             //temporary
-            _ui.Initialize(this, OnUnitPlaced);
+            _ui.Initialize(this, OnUnitPlacedOnGroundAndFinishSetup);
             _ui.UpdateLifeTexts(_playerLifes, _playerLifes);
             _gameState = State.Ready;
 
@@ -282,7 +277,7 @@ public class GameController : MonoBehaviour
     {
         var entity = Instantiate(so.prefab);
         entity.transform.position = position;
-
+        
         RegisterEntity(entity);
         return entity;
     }

@@ -8,9 +8,9 @@ public class Enemy : Entity
     public override void Initialize(GameController gameController)
     {
         base.Initialize(gameController);
-        _team = GameController.TEAMENEMY;
-        entityData.team = global::GameController.TEAMENEMY;
-        entityData.teamTarget = global::GameController.TEAMALLY;
+        _team = Global.TEAMENEMY;
+        entityData.team = Global.TEAMENEMY;
+        entityData.teamTarget = Global.TEAMALLY;
         gameObject.SetActive(true);
     }
 

@@ -113,10 +113,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7813590141776298306, guid: 786fac7170573431a9f628a047050644, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 801d497d7e7e8426180fe8380277cbbc, type: 2}
     - target: {fileID: 919132149155446097, guid: 786fac7170573431a9f628a047050644, type: 3}
       propertyPath: m_Name
       value: Happy Idle
       objectReference: {fileID: 0}
+    - target: {fileID: 5822821947120931875, guid: 786fac7170573431a9f628a047050644, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: c6507a4b9ae374ca39db106b81300bce, type: 2}
     - target: {fileID: 5866666021909216657, guid: 786fac7170573431a9f628a047050644, type: 3}
       propertyPath: m_Controller
       value: 
