@@ -38,11 +38,15 @@ public class StateAttack : IState<Entity>
     }
 
     protected virtual void OnAttackTrigger()
-    {        
-        ent.entityData._target.Damage(ent.entityData._damage);
-
+    {
+        DamageOtherEntity();
         isTriggered = true;
         Reset();
+    }
+
+    protected virtual void DamageOtherEntity()
+    {
+        ent.entityData._target.Damage(ent.entityData._damage);
     }
 
     protected virtual void TransitionOnAttack()

@@ -107,4 +107,9 @@ public class StateEnemyRangeAttack : StateAttack
         transitionOnCounter = ent.UnitSO._rduration;
         transitionOffCounter = Mathf.Min(ent.UnitSO._rClip.length - transitionOnCounter, 0.5f);
     }
+
+    protected override void DamageOtherEntity()
+    {
+        ent.entityData._target.Damage(ent.UnitSO._rdamage);
+    }
 }
