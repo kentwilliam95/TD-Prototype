@@ -31,7 +31,7 @@ public class StateMove : IState<Entity>
             var dist = Vector3.Distance(t.entityData._target.transform.position, t.transform.position);
             if (dist < 1) //1 should be replaced with this unit attack range
             {
-                t.ChangeState(Entity.State.Attack);
+                t.ChangeState(Entity.State.EnemyAttack);
                 return;
             }
         }
@@ -41,7 +41,7 @@ public class StateMove : IState<Entity>
         if (enemy != null && !enemy.IsDead)
         {
             t.entityData._target = enemy;
-            t.ChangeState(Entity.State.AttackAndMove);
+            t.ChangeState(Entity.State.EnemyRangeAttack);
             return;
         }
     }

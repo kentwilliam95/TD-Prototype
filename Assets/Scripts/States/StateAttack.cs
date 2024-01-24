@@ -32,14 +32,6 @@ public class StateAttack : IState<Entity>
 
     protected virtual void UpdateState()
     {
-        //TODO: Add check condition when arrived at destination then return
-        if(ent.CheckNearObjective())
-        {
-            // ent.ChangeState(new StateDeadDamage());
-            ent.ChangeState(Entity.State.DeadAndDamage);
-            return;
-        }
-            
         TransitionOnAttack();
         TransitionOffAttack();
         TransitionToAttack();
@@ -80,12 +72,7 @@ public class StateAttack : IState<Entity>
         if (ent.entityData._target.IsDead)
         {
             ent.entityData._target = null;
-            if (ent is Enemy)
-                // ent.ChangeState(new StateMove());
-                ent.ChangeState(Entity.State.Move);
-            else if (ent is Unit)
-                // ent.ChangeState(new StateIdle());
-                ent.ChangeState(Entity.State.Idle);
+            ChangeTargetAfterAttack();
         }
         else
         {
@@ -93,6 +80,11 @@ public class StateAttack : IState<Entity>
             isTriggered = false;
             isAttacking = false;
         }
+    }
+
+    protected virtual void ChangeTargetAfterAttack()
+    {
+        
     }
 
     protected virtual void TransitionToAttack()
@@ -107,13 +99,18 @@ public class StateAttack : IState<Entity>
         var enemy = ent.entityData._target;
         isAttacking = true;
         ent.StopAgent();
-        ent.PlayAnimation(AnimationController.AnimationType.Attack);
+        PlayAnimationAttack();
+    }
+
+    protected virtual void PlayAnimationAttack()
+    {
+        
     }
 
     protected virtual void Reset()
     {
-        transitionOffCounter = 0.5f;
-        transitionOnCounter = 0.5f;
+        transitionOffCounter = Mathf.Min(ent.UnitSO._mClip.length - ent.UnitSO._duration, 0.5f);
+        transitionOnCounter = ent.UnitSO._duration;
     }
 
     public void OnStateExit(Entity t)

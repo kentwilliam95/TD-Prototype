@@ -7,6 +7,9 @@ public class Global
     public const int TEAMALLY = 1;
     public const int TEAMENEMY = 2;
     public const int TOTALLIVES = 3;
+    
+    public const int DRAGDROPRAYCASTLENGTH = 25;
+    public const int RAYCASTSETUPNAVMESH = 2;
 
     public static LayerMask LayerMaskGround;
 
@@ -27,6 +30,6 @@ public class Global
 
     public static void SlowDown()
     {
-        Time.timeScale = 0.5f;
+        Time.timeScale = 0.35f;
     }
 }

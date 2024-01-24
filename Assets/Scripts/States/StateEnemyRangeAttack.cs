@@ -3,7 +3,7 @@ using UnityEngine;
 //this should be attack and move at the same time,
 //and will walk to an objective
 //if there is no enemy or the enemy is outside of its attack range
-public class StateAttackandMove : StateAttack
+public class StateEnemyRangeAttack : StateAttack
 {
     private float walkCounter = 0;
     private bool isWalking;
@@ -47,7 +47,7 @@ public class StateAttackandMove : StateAttack
         if (enemy != null && !enemy.IsDead)
         {
             ent.entityData._target = enemy;
-            ent.ChangeState(Entity.State.Attack);
+            ent.ChangeState(Entity.State.EnemyAttack);
         }
     }
 
@@ -95,5 +95,16 @@ public class StateAttackandMove : StateAttack
         ent.PlayAnimation(AnimationController.AnimationType.Idle);
         attackCounter = ent.entityData._duration;
         walkCounter = 0.25f;
+    }
+
+    protected override void PlayAnimationAttack()
+    {
+        ent.PlayAnimation(AnimationController.AnimationType.RangeAttack);
+    }
+
+    protected override void Reset()
+    {
+        transitionOnCounter = ent.UnitSO._rduration;
+        transitionOffCounter = Mathf.Min(ent.UnitSO._rClip.length - transitionOnCounter, 0.5f);
     }
 }

@@ -23,12 +23,17 @@ public class UnitDataSO : ScriptableObject
     
     public float _health;
     public float _speed;
-    
-    [Header("Attack")]
+
+    [Header("Melee Attack")] 
+    public AnimationClip _mClip;
     public float _damage;
-    public float _delay;
     public float _duration;
 
+    [Header("Range Attack")] 
+    public AnimationClip _rClip;
+    public float _rdamage;
+    public float _rduration;
+    
     public Projectile _projectile;
     public float _projectileSpeed;
     public AttackDirection[] attackDirection;

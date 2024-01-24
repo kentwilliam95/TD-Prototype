@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08fe2c20e8bdc4bd9909d094a84e7393, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _camPosition: {fileID: 0}
   _unitSO: {fileID: 11400000, guid: 52fc8582f31cb45b2a7c7446c5b0bcc3, type: 2}
   _animController: {fileID: 4615615958845441193}
   _debugText: 
@@ -73,6 +74,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6140100003554093963}
     m_Modifications:
+    - target: {fileID: -8955316372418814459, guid: 786fac7170573431a9f628a047050644, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8955316372418814459, guid: 786fac7170573431a9f628a047050644, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8955316372418814459, guid: 786fac7170573431a9f628a047050644, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 786fac7170573431a9f628a047050644, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -116,7 +129,7 @@ PrefabInstance:
     - target: {fileID: -7813590141776298306, guid: 786fac7170573431a9f628a047050644, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 801d497d7e7e8426180fe8380277cbbc, type: 2}
+      objectReference: {fileID: 2100000, guid: 0cfde3cc25e9b43bdaee7c690bd66081, type: 2}
     - target: {fileID: 919132149155446097, guid: 786fac7170573431a9f628a047050644, type: 3}
       propertyPath: m_Name
       value: Happy Idle
@@ -124,7 +137,7 @@ PrefabInstance:
     - target: {fileID: 5822821947120931875, guid: 786fac7170573431a9f628a047050644, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: c6507a4b9ae374ca39db106b81300bce, type: 2}
+      objectReference: {fileID: 2100000, guid: 5ea406a87f3ed42849760c5f5d494c91, type: 2}
     - target: {fileID: 5866666021909216657, guid: 786fac7170573431a9f628a047050644, type: 3}
       propertyPath: m_Controller
       value: 

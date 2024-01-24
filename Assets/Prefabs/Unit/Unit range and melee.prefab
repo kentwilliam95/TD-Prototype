@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8813704504201360332}
   - component: {fileID: 72625287388669881}
   m_Layer: 0
-  m_Name: Unit
+  m_Name: Unit range and melee
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _camPosition: {fileID: 1213937559740128605}
-  _unitSO: {fileID: 11400000, guid: 3c184485b16944b578212f09d8866db1, type: 2}
+  _unitSO: {fileID: 11400000, guid: 909f21a571d9543c88e1170d808df3e5, type: 2}
   _animController: {fileID: 72625287388669881}
   _debugText: 
 --- !u!114 &72625287388669881

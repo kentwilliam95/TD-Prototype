@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Core;
+using States;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -15,6 +16,7 @@ public class Entity : MonoBehaviour
         public int team;
         public int teamTarget;
 
+        public UnitDataSO.AttackDirection[] _AttackDirections;
         public Projectile _projectile;
         public float _projectileSpeed;
 
@@ -27,18 +29,23 @@ public class Entity : MonoBehaviour
 
     public enum State
     {
-        AttackAndMove,
-        Attack,
+        EnemyRangeAttack,
+        EnemyAttack,
+        AllyAttack,
+        AllyRangeAttack,
         Idle,
         Move,
         Dead,
         DeadAndDamage
     }
 
-    private StateAttack _stateAttack = new StateAttack();
+    private StateAllyRangeAttack _stateAllyRangeAttack = new StateAllyRangeAttack();
+    private StateAllyAttack _stateAllyAttack = new StateAllyAttack();
+    private StateEnemyAttack _stateEnemyAttack = new StateEnemyAttack();
+    private StateEnemyRangeAttack _stateEnemyRangeAttack = new StateEnemyRangeAttack();
+    
     private StateIdle _stateIdle = new StateIdle();
     private StateMove _stateMove = new StateMove();
-    private StateAttackandMove _stateAttackAndMove = new StateAttackandMove();
     private StateDeadDamage _stateDeadDamage = new StateDeadDamage();
 
     #endregion
@@ -134,13 +141,13 @@ public class Entity : MonoBehaviour
             _speed = _unitSO._speed,
             health = _unitSO._health,
             _damage = _unitSO._damage,
-            _delay = _unitSO._delay,
             _duration = _unitSO._duration,
             _projectile = _unitSO._projectile,
             _projectileSpeed = _unitSO._projectileSpeed,
-            listMovement = new List<Ground>()
+            listMovement = new List<Ground>(),
+            _AttackDirections =  _unitSO.attackDirection
         };
-
+        
         _customAgent.Speed = _unitSO._speed;
     }
 
@@ -177,12 +184,20 @@ public class Entity : MonoBehaviour
     {
         switch (state)
         {
-            case State.AttackAndMove:
-                _stateMachine.ChangeState(_stateAttackAndMove);
+            case State.EnemyRangeAttack:
+                _stateMachine.ChangeState(_stateEnemyRangeAttack);
                 break;
 
-            case State.Attack:
-                _stateMachine.ChangeState(_stateAttack);
+            case State.EnemyAttack:
+                _stateMachine.ChangeState(_stateEnemyAttack);
+                break;
+            
+            case State.AllyAttack:
+                _stateMachine.ChangeState(_stateAllyAttack);
+                break;
+            
+            case State.AllyRangeAttack:
+                _stateMachine.ChangeState(_stateAllyRangeAttack);
                 break;
 
             case State.Idle:

@@ -8,8 +8,8 @@ public class AnimationController : MonoBehaviour
     public enum AnimationType
     {
         Idle,
-        Attack,
-        AttackRange,
+        MeleeAttack,
+        RangeAttack,
         Run,
         Damaged,
         Dead

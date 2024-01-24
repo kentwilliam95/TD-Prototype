@@ -11,7 +11,6 @@ public class GameController : MonoBehaviour
 
     private static GameController _instance;
     public static GameController Instance => _instance;
-    public static event Action OnStateChanged;
 
     public enum State
     {
@@ -22,7 +21,7 @@ public class GameController : MonoBehaviour
 
     private Ground _spawnedObjective;
 
-    private int _playerUnitCurrency;
+    private int _playerUnitCurrency = 10;
     private float _unitCurrencyCounter;
     private int _playerLifes;
 
@@ -144,8 +143,6 @@ public class GameController : MonoBehaviour
             _ui.Initialize(this, OnUnitPlacedOnGroundAndFinishSetup);
             _ui.UpdateLifeTexts(_playerLifes, _playerLifes);
             _gameState = State.Ready;
-
-            OnStateChanged?.Invoke();
         }));
     }
 
@@ -261,7 +258,6 @@ public class GameController : MonoBehaviour
         if (_playerLifes <= 0)
         {
             _gameState = State.End;
-            OnStateChanged?.Invoke();
             _ui.ShowGameOver();
             
             for (int i = _spawnedEntity.Count - 1; i >= 0; i--)

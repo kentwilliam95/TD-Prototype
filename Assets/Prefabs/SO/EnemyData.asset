@@ -17,9 +17,12 @@ MonoBehaviour:
   _cost: 0
   _health: 10
   _speed: 3
+  _mClip: {fileID: -203655887218126122, guid: a88b69de0d21f410ebc2207acaf53bb7, type: 3}
   _damage: 1
-  _delay: 0.5
-  _duration: 0.5
+  _duration: 0.425
+  _rClip: {fileID: -203655887218126122, guid: ba656d86aea254869b2cf5f2b095ae0e, type: 3}
+  _rdamage: 1
+  _rduration: 0.2352941
   _projectile: {fileID: 6202795342205682822, guid: 28434cb0a5fa744a7a9886127016078a, type: 3}
   _projectileSpeed: 4
   attackDirection: 01000000020000000300000000000000

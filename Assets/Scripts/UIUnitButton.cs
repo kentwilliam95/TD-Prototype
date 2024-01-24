@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class UIUnitButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
 {
@@ -17,6 +18,7 @@ public class UIUnitButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
     public UnitDataSO _unitSO;
     public TextMeshProUGUI _textCost;
+    public Image _image;
     public CanvasGroup _canvasGroup;
 
     public Action<UIGameController.PlacedUnit> onUnitPlaced;
@@ -27,6 +29,7 @@ public class UIUnitButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
     {
         _controller = gameController;
         _textCost.text = _unitSO._cost.ToString();
+        _image.sprite = _unitSO._sprite;
         this.onUnitPlaced = onUnitPlaced;
     }
 
@@ -56,12 +59,14 @@ public class UIUnitButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         if (HandleClick())
             return;   
         
-        Debug.Log("Pointer Up");
         if (_controller.GameState == GameController.State.End)
             return;
 
         if (!_selectedGround)
-            return;
+        {
+            Destroy(_spawnedEntity.gameObject);
+            return;   
+        }
 
         _selectedGround.SetColor(Color.green);
         onUnitPlaced?.Invoke(new UIGameController.PlacedUnit() { _unitSO = _unitSO, _ground = _selectedGround , _spawnedEntity = _spawnedEntity, _uiButton = this});
@@ -77,7 +82,7 @@ public class UIUnitButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         var cam = CameraController.Instance.Camera;
 
         var ray = cam.ScreenPointToRay(eventData.position);
-        int hitCount = Physics.RaycastNonAlloc(ray, hitResult, 25f, Global.LayerMaskGround);
+        int hitCount = Physics.RaycastNonAlloc(ray, hitResult, Global.DRAGDROPRAYCASTLENGTH, Global.LayerMaskGround);
 
         for (int i = 0; i < hitCount; i++)
         {
