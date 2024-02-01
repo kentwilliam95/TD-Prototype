@@ -4,8 +4,10 @@ public class Global
 {
     public const string SCENEGAME = "SampleScene";
     public const string LAYERMASKGROUND = "Ground";
-    public const int TEAMALLY = 1;
-    public const int TEAMENEMY = 2;
+    
+    public static Vector3Int[] NavmeshLinkDirections = new Vector3Int[]
+        { Vector3Int.right, Vector3Int.forward, Vector3Int.left, Vector3Int.back };
+    
     public const int TOTALLIVES = 3;
     
     public const int DRAGDROPRAYCASTLENGTH = 25;

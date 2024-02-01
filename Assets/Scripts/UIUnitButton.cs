@@ -92,7 +92,7 @@ public class UIUnitButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
                 if (ground is GroundObjective || ground is GroundSpawnedEnemy)
                     return;
 
-                var isValidPlacement = _controller.CheckIfThereIsAnEntityOnGround(ground, Global.TEAMALLY);
+                var isValidPlacement = _controller.CheckIfThereIsAnEntityOnGround(ground, UnitDataSO.Team.Blue);
                 if (!isValidPlacement)
                 {
                     _spawnedEntity.transform.position = ground.Top;

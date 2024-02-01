@@ -1,5 +1,4 @@
 using Core;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class StateIdle : IState<Entity>
@@ -17,7 +16,7 @@ public class StateIdle : IState<Entity>
 
     private void UpdateStateToRangeAttack(Entity t)
     {
-        var enemy = t.CheckEnemyInRange(t, t.entityData.teamTarget);
+        var enemy = t.CheckEnemyInRange();
         if (!enemy)
             return;
         t.entityData._target = enemy;
@@ -26,7 +25,7 @@ public class StateIdle : IState<Entity>
 
     private void UpdateStateToMeleeAttack(Entity t)
     {
-        Entity enemy = t.CheckIsEnemyOnTheSameGround(t, t.entityData.teamTarget);
+        Entity enemy = t.CheckIsEnemyOnTheSameGround();
         if (!enemy)
             return;
 

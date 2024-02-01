@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 8813704504201360332, guid: 37d0f98bccbd447f8b405ff479e64b1c, type: 3}
   _sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  _cost: 10
+  _cost: 15
+  _team: 1
+  _targetTeam: 0
   _health: 10
   _speed: 0
   _mClip: {fileID: -203655887218126122, guid: 77edb7e1140d9489f8a1be011e9e57f8, type: 3}

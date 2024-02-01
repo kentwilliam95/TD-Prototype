@@ -4,22 +4,16 @@ namespace States
 {
     public class StateAllyRangeAttack : StateAttack
     {
-        //Do range attack
-        protected override void OnAttackTrigger()
+        protected override void UpdateStateProgress()
         {
-            base.OnAttackTrigger();
-        }
-
-        protected override void UpdateState()
-        {
-            var enemy = ent.CheckIsEnemyOnTheSameGround(ent, ent.entityData.teamTarget);
+            var enemy = ent.CheckIsEnemyOnTheSameGround();
             if (enemy)
             {
                 ent.ChangeState(Entity.State.AllyAttack);
                 return;
             }
 
-            base.UpdateState();
+            base.UpdateStateProgress();
         }
 
         protected override void ChangeTargetAfterAttack()

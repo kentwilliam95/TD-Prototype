@@ -10,12 +10,7 @@ public class Entity : MonoBehaviour
     public struct Data
     {
         public float health;
-        public float _speed;
-        public float _damage;
-        public float _delay;
         public float _duration;
-        public int team;
-        public int teamTarget;
 
         public UnitDataSO.AttackDirection[] _AttackDirections;
         public Projectile _projectile;
@@ -87,9 +82,6 @@ public class Entity : MonoBehaviour
     [SerializeField] private Transform _camPosition;
     public Transform CamPosition => _camPosition;
 
-    protected int _team;
-    public int Team => _team;
-
     protected GameController _controller;
     public GameController GameController => _controller;
 
@@ -149,9 +141,7 @@ public class Entity : MonoBehaviour
 
         entityData = new Data()
         {
-            _speed = _unitSO._speed,
             health = _unitSO._health,
-            _damage = _unitSO._damage,
             _duration = _unitSO._duration,
             _projectile = _unitSO._projectile,
             _projectileSpeed = _unitSO._projectileSpeed,
@@ -306,30 +296,30 @@ public class Entity : MonoBehaviour
         return _ground == ground;
     }
 
-    public Entity CheckIsEnemyOnTheSameGround(Entity t, int team)
+    public Entity CheckIsEnemyOnTheSameGround()
     {
         Entity res = null;
 
-        Ground ground = t.GameController.GetGround(t.Index2D);
-        var list = t.GameController.GetEntitiesOnGround(ground, team);
+        Ground ground = GameController.GetGround(Index2D);
+        var list = GameController.GetEntitiesOnGround(ground, _unitSO._targetTeam);
         if (list.Count > 0)
             res = list[0];
 
         return res;
     }
 
-    public Entity CheckEnemyInRange(Entity t, int team)
+    public Entity CheckEnemyInRange()
     {
         Entity res = null;
-        foreach (var dir in t.UnitSO.attackDirection)
+        foreach (var dir in UnitSO.attackDirection)
         {
-            Vector2Int index2D = t.UnitSO.CalculateGroundIndex(dir, t.Index2D, ConvertLookDirection(transform.forward.normalized));
-            Ground ground = t.GameController.GetGround(index2D);
+            Vector2Int index2D = UnitSO.CalculateGroundIndex(dir, Index2D, ConvertLookDirection(transform.forward.normalized));
+            Ground ground = GameController.GetGround(index2D);
 
             if (ground == null)
                 continue;
 
-            List<Entity> list = t.GameController.GetEntitiesOnGround(ground, team);
+            List<Entity> list = GameController.GetEntitiesOnGround(ground, _unitSO._targetTeam);
 
             if (list.Count > 0)
             {

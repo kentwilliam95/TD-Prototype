@@ -27,29 +27,29 @@ public class StateAttack : IState<Entity>
     {
         if (t.GameController.GameState == GameController.State.End)
             return;
-        UpdateState();
+        UpdateStateProgress();
     }
 
-    protected virtual void UpdateState()
+    protected virtual void UpdateStateProgress()
     {
         TransitionOnAttack();
         TransitionOffAttack();
         TransitionToAttack();
     }
 
-    protected virtual void OnAttackTrigger()
+    private void OnAttackTrigger()
     {
-        DamageOtherEntity();
         isTriggered = true;
+        DamageOtherEntity();
         Reset();
     }
 
     protected virtual void DamageOtherEntity()
     {
-        ent.entityData._target.Damage(ent.entityData._damage);
+        ent.entityData._target.Damage(ent.UnitSO._damage);
     }
 
-    protected virtual void TransitionOnAttack()
+    private void TransitionOnAttack()
     {
         if (!isAttacking)
             return;
@@ -72,23 +72,19 @@ public class StateAttack : IState<Entity>
         transitionOffCounter -= Time.deltaTime;
         if (transitionOffCounter > 0)
             return;
-
-        if (ent.entityData._target.IsDead)
-        {
-            ent.entityData._target = null;
-            ChangeTargetAfterAttack();
-        }
-        else
-        {
-            attackCounter = ent.entityData._duration;
-            isTriggered = false;
-            isAttacking = false;
-        }
+        
+        attackCounter = ent.entityData._duration;
+        isTriggered = false;
+        isAttacking = false;
+        ChangeTargetAfterAttack();
     }
 
     protected virtual void ChangeTargetAfterAttack()
     {
-        
+        if (ent.entityData._target.IsDead)
+        {
+            ent.entityData._target = null;
+        }
     }
 
     protected virtual void TransitionToAttack()

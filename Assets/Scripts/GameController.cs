@@ -2,13 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    public static Vector3Int[] NavmeshLinkDirections = new Vector3Int[]
-        { Vector3Int.right, Vector3Int.forward, Vector3Int.left, Vector3Int.back };
-
     private static GameController _instance;
     public static GameController Instance => _instance;
 
@@ -53,11 +49,6 @@ public class GameController : MonoBehaviour
         _playerLifes = Global.TOTALLIVES;
         Global.Init();
         System.Buffers.ArrayPool<RaycastHit>.Create(100, 10);
-    }
-
-    private void OnDestroy()
-    {
-        
     }
 
     private void Start()
@@ -207,13 +198,13 @@ public class GameController : MonoBehaviour
         return _spawnedGround[index];
     }
 
-    public List<Entity> GetEntitiesOnGround(Ground ground, int team)
+    public List<Entity> GetEntitiesOnGround(Ground ground, UnitDataSO.Team team)
     {
         List<Entity> res = new List<Entity>();
         for (int i = 0; i < _spawnedEntity.Count; i++)
         {
             Entity entity = _spawnedEntity[i];
-            if (!entity.IsStandingOnTheSameGround(ground) || entity.Team != team)
+            if (!entity.IsStandingOnTheSameGround(ground) || entity.UnitSO._team != team)
                 continue;
             res.Add(entity);
         }
@@ -221,12 +212,12 @@ public class GameController : MonoBehaviour
         return res;
     }
 
-    public bool CheckIfThereIsAnEntityOnGround(Ground ground, int team)
+    public bool CheckIfThereIsAnEntityOnGround(Ground ground, UnitDataSO.Team team)
     {
         for (int i = 0; i < _spawnedEntity.Count; i++)
         {
             Entity entity = _spawnedEntity[i];
-            if (entity.IsStandingOnTheSameGround(ground) && entity.Team == team)
+            if (entity.IsStandingOnTheSameGround(ground) && entity.UnitSO._team == team)
                 return true;
         }
 

@@ -10,7 +10,7 @@ namespace States
             t.WeaponHandler.Equip(WeaponHandler.WeaponType.Melee);
         }
 
-        protected override void UpdateState()
+        protected override void UpdateStateProgress()
         {
             //TODO: Add check condition when arrived at destination then return
             if (ent.CheckNearObjective())
@@ -20,7 +20,7 @@ namespace States
                 return;
             }
             
-            base.UpdateState();
+            base.UpdateStateProgress();
         }
 
         protected override void ChangeTargetAfterAttack()

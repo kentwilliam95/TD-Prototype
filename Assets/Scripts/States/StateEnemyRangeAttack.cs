@@ -14,36 +14,30 @@ public class StateEnemyRangeAttack : StateAttack
         ent.WeaponHandler.Equip(WeaponHandler.WeaponType.Range);
     }
 
-    protected override void OnAttackTrigger()
+    protected override void UpdateStateProgress()
     {
-        if (ent == null || ent.entityData._target == null)
-            return;
-
-        isTriggered = true;
-        Reset();
-
-        Projectile projectile = GameObject.Instantiate(ent.entityData._projectile);
-        var start = ent.GetBone(HumanBodyBones.RightHand);
-        var end = ent.entityData._target.transform;
-        projectile.Initialize(start, end, ent.entityData._projectileSpeed);
-        projectile.onHitTarget = () => { ent.entityData._target.Damage(ent.entityData._damage); };
-    }
-
-    protected override void UpdateState()
-    {
-        //TODO: Add check condition when arrived at destination
-
-        base.UpdateState();
-        
+        base.UpdateStateProgress();
         UpdateStateToMove();
-
         UpdateWalkState();
     }
 
     private void UpdateStateToMove()
     {
-        Entity enemy = ent.CheckIsEnemyOnTheSameGround(ent, ent.entityData.teamTarget);
-        Entity rangeEnemy = ent.CheckEnemyInRange(ent, ent.entityData.teamTarget);
+        Entity enemy = ent.CheckIsEnemyOnTheSameGround();
+        Entity rangeEnemy = ent.CheckEnemyInRange();
+
+        if (ent.CheckNearObjective())
+        {
+            ent.ChangeState(Entity.State.DeadAndDamage);
+            return;
+        }
+
+        if (enemy)
+        {
+            ent.entityData._target = enemy;
+            ent.ChangeState(Entity.State.EnemyAttack);
+            return;
+        }
 
         if (ent.entityData._target.IsDead)
         {
@@ -60,30 +54,18 @@ public class StateEnemyRangeAttack : StateAttack
         }
     }
 
-    protected override void TransitionOffAttack()
+    protected override void ChangeTargetAfterAttack()
     {
-        if (!isTriggered)
-            return;
-
-        transitionOffCounter -= Time.deltaTime;
-        if (transitionOffCounter > 0)
-            return;
-
         if (ent.entityData._target.IsDead)
         {
             ent.entityData._target = null;
-            if (ent is Enemy)
-                ent.ChangeState(Entity.State.Move);
-            else if (ent is Unit)
-                ent.ChangeState(Entity.State.Idle);
+            ent.ChangeState(Entity.State.Move);
         }
         else
         {
             attackCounter = ent.entityData._duration;
             walkCounter = 0.25f;
             isWalking = true;
-            isTriggered = false;
-            isAttacking = false;
             ent.PlayAnimation(AnimationController.AnimationType.Run);
             ent.StartAgent();
         }
@@ -119,7 +101,14 @@ public class StateEnemyRangeAttack : StateAttack
 
     protected override void DamageOtherEntity()
     {
-        ent.entityData._target.Damage(ent.UnitSO._rdamage);
+        if (ent == null || ent.entityData._target == null)
+            return;
+
+        Projectile projectile = GameObject.Instantiate(ent.entityData._projectile);
+        var start = ent.GetBone(HumanBodyBones.RightHand);
+        var end = ent.entityData._target.transform;
+        projectile.Initialize(start, end, ent.entityData._projectileSpeed);
+        projectile.onHitTarget = () => { ent.entityData._target.Damage(ent.UnitSO._damage); };
     }
 
     public override void OnStateExit(Entity t)

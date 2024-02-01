@@ -15,6 +15,8 @@ MonoBehaviour:
   prefab: {fileID: 0}
   _sprite: {fileID: 0}
   _cost: 0
+  _team: 0
+  _targetTeam: 1
   _health: 10
   _speed: 3
   _mClip: {fileID: -203655887218126122, guid: a88b69de0d21f410ebc2207acaf53bb7, type: 3}
@@ -25,4 +27,4 @@ MonoBehaviour:
   _rduration: 0.3529412
   _projectile: {fileID: 6202795342205682822, guid: 28434cb0a5fa744a7a9886127016078a, type: 3}
   _projectileSpeed: 4
-  attackDirection: 01000000
+  attackDirection: 0100000000000000020000000300000004000000050000000600000007000000

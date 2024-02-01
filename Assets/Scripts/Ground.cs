@@ -117,9 +117,9 @@ public class Ground : MonoBehaviour
     public virtual void SetupNavmeshLink()
     {
         var hitResult = ArrayPool<RaycastHit>.Shared.Rent(8);
-        for (int i = 0; i < GameController.NavmeshLinkDirections.Length; i++)
+        for (int i = 0; i < Global.NavmeshLinkDirections.Length; i++)
         {
-            var rayDirection = GameController.NavmeshLinkDirections[i];
+            var rayDirection = Global.NavmeshLinkDirections[i];
             int hitCount =
                 Physics.RaycastNonAlloc(_center, rayDirection, hitResult, Global.RAYCASTSETUPNAVMESH, Global.LayerMaskGround);
 

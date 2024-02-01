@@ -1,11 +1,14 @@
-using System;using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Unit Data SO", fileName = "UnitData")]
 public class UnitDataSO : ScriptableObject
 {
+    public enum Team
+    {
+        Red,
+        Blue
+    }
+    
     public enum AttackDirection
     {
         Left,
@@ -21,6 +24,8 @@ public class UnitDataSO : ScriptableObject
     public Entity prefab;
     public Sprite _sprite;
     public int _cost;
+    public Team _team;
+    public Team _targetTeam;
     
     public float _health;
     public float _speed;
