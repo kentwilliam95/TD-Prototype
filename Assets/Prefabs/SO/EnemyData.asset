@@ -22,7 +22,7 @@ MonoBehaviour:
   _duration: 0.425
   _rClip: {fileID: -203655887218126122, guid: ba656d86aea254869b2cf5f2b095ae0e, type: 3}
   _rdamage: 1
-  _rduration: 0.2352941
+  _rduration: 0.3529412
   _projectile: {fileID: 6202795342205682822, guid: 28434cb0a5fa744a7a9886127016078a, type: 3}
   _projectileSpeed: 4
-  attackDirection: 01000000020000000300000000000000
+  attackDirection: 01000000

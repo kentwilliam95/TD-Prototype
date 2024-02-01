@@ -4,9 +4,10 @@ namespace States
 {
     public class StateEnemyAttack : StateAttack
     {
-        protected override void OnAttackTrigger()
+        public override void OnStateEnter(Entity t)
         {
-            base.OnAttackTrigger();
+            base.OnStateEnter(t);
+            t.WeaponHandler.Equip(WeaponHandler.WeaponType.Melee);
         }
 
         protected override void UpdateState()
@@ -32,9 +33,9 @@ namespace States
             ent.PlayAnimation(AnimationController.AnimationType.MeleeAttack);
         }
 
-        protected override void Reset()
+        public override void OnStateExit(Entity t)
         {
-            base.Reset();
+            t.WeaponHandler.UnEquip(WeaponHandler.WeaponType.Melee);
         }
     }
 }

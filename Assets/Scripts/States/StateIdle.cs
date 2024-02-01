@@ -18,7 +18,7 @@ public class StateIdle : IState<Entity>
     private void UpdateStateToRangeAttack(Entity t)
     {
         var enemy = t.CheckEnemyInRange(t, t.entityData.teamTarget);
-        if(!enemy)
+        if (!enemy)
             return;
         t.entityData._target = enemy;
         t.ChangeState(Entity.State.AllyRangeAttack);
@@ -29,7 +29,7 @@ public class StateIdle : IState<Entity>
         Entity enemy = t.CheckIsEnemyOnTheSameGround(t, t.entityData.teamTarget);
         if (!enemy)
             return;
-        
+
         t.entityData._target = enemy;
         t.ChangeState(Entity.State.AllyAttack);
     }

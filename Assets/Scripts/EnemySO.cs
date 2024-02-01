@@ -1,5 +1,6 @@
 using System;using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Unit Data SO", fileName = "UnitData")]
@@ -75,5 +76,14 @@ public class UnitDataSO : ScriptableObject
         Vector2Int modifier = GetAttackDirectionVector2(direction);
         index += modifier;
         return index;
+    }
+    
+    public Vector2Int CalculateGroundIndex(AttackDirection direction, Vector2Int index, Vector3 entityLookDirection)
+    {
+        var angle = Vector3.SignedAngle(Vector3.up, entityLookDirection, Vector3.forward);
+        Vector2Int modifier = GetAttackDirectionVector2(direction);
+        Vector3 finalModifier = Quaternion.AngleAxis(angle, Vector3.forward) * new Vector3(modifier.x, modifier.y, 0f);
+        // Debug.Log($"Attack Direction: {direction} , Modifier : {modifier}, angle: {angle}, lookDirection: {entityLookDirection}, Final Modifier: {finalModifier}");
+        return index + new Vector2Int(System.Convert.ToInt32(finalModifier.x), System.Convert.ToInt32(finalModifier.y));
     }
 }

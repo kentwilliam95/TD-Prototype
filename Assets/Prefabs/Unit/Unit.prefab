@@ -47,6 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7d164a4802be49939be1f47bd956f0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <WeaponHandler>k__BackingField: {fileID: 0}
+  <Renderer>k__BackingField: {fileID: 8513192930355911484}
   _camPosition: {fileID: 1213937559740128605}
   _unitSO: {fileID: 11400000, guid: 3c184485b16944b578212f09d8866db1, type: 2}
   _animController: {fileID: 72625287388669881}
@@ -182,6 +184,11 @@ PrefabInstance:
 --- !u!4 &2405070726034598132 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 786fac7170573431a9f628a047050644, type: 3}
+  m_PrefabInstance: {fileID: 2804122335769448223}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &8513192930355911484 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5822821947120931875, guid: 786fac7170573431a9f628a047050644, type: 3}
   m_PrefabInstance: {fileID: 2804122335769448223}
   m_PrefabAsset: {fileID: 0}
 --- !u!95 &8611071335793586830 stripped

@@ -104,14 +104,15 @@ public class GameController : MonoBehaviour
         _ui.ShowWin();
     }
 
-    private void OnUnitPlacedOnGroundAndFinishSetup(UIGameController.PlacedUnit unit)
+    private void OnUnitPlacedOnGroundAndFinishSetup(UIGameController.PlacedUnit placedUnit)
     {
-        var currency = _playerUnitCurrency - unit._unitSO._cost;
+        var currency = _playerUnitCurrency - placedUnit._unitSO._cost;
         if (currency < 0)
             return;
 
-        _playerUnitCurrency = currency; 
-        SpawnUnit(unit._unitSO, unit._ground.Top).transform.forward = unit._unitDirection;
+        _playerUnitCurrency = currency;
+        Entity unit = SpawnUnit(placedUnit._unitSO, placedUnit._ground.Top);
+        unit.SetLookDirection(placedUnit._unitDirection);
     }
 
     public void RegisterEntity(Entity ent)

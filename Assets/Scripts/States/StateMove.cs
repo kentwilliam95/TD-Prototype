@@ -7,7 +7,7 @@ public class StateMove : IState<Entity>
     {
         if (t.GameController.GameState == GameController.State.End)
             return;
-        
+
         t.StartAgent();
         t.PlayAnimation(AnimationController.AnimationType.Run);
     }
@@ -16,7 +16,7 @@ public class StateMove : IState<Entity>
     {
         if (t.GameController.GameState == GameController.State.End)
             return;
-        
+
         if (t.CheckNearObjective())
         {
             t.ChangeState(Entity.State.DeadAndDamage);
@@ -24,7 +24,7 @@ public class StateMove : IState<Entity>
         }
 
         //Prioritize Enemy on the same ground 
-        Entity enemy = t.CheckIsEnemyOnTheSameGround(t, Global.TEAMALLY);
+        Entity enemy = t.CheckIsEnemyOnTheSameGround(t, t.entityData.teamTarget);
         if (enemy != null && !enemy.IsDead)
         {
             t.entityData._target = enemy;
@@ -37,13 +37,24 @@ public class StateMove : IState<Entity>
         }
 
         // if there is no enemy on the same ground check for enemy on different attack range
-        enemy = t.CheckEnemyInRange(t, Global.TEAMALLY);
+        enemy = t.CheckEnemyInRange(t, t.entityData.teamTarget);
         if (enemy != null && !enemy.IsDead)
         {
             t.entityData._target = enemy;
             t.ChangeState(Entity.State.EnemyRangeAttack);
             return;
         }
+    }
+
+    private Vector3 ConvertLookDirection(Vector3 forward)
+    {
+        float x = Mathf.Abs(forward.x);
+        float y = Mathf.Abs(forward.y);
+
+        if (x >= y)
+            return new Vector3(1 * Mathf.Sign(forward.x), 0, 0);
+        else
+            return new Vector3(0, 0, 1 * Mathf.Sign(forward.y));
     }
 
     public void OnStateExit(Entity t)

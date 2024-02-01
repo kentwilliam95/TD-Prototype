@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Core;
+using DG.Tweening;
 using States;
 using UnityEngine;
 using UnityEngine.AI;
@@ -43,7 +44,7 @@ public class Entity : MonoBehaviour
     private StateAllyAttack _stateAllyAttack = new StateAllyAttack();
     private StateEnemyAttack _stateEnemyAttack = new StateEnemyAttack();
     private StateEnemyRangeAttack _stateEnemyRangeAttack = new StateEnemyRangeAttack();
-    
+
     private StateIdle _stateIdle = new StateIdle();
     private StateMove _stateMove = new StateMove();
     private StateDeadDamage _stateDeadDamage = new StateDeadDamage();
@@ -52,7 +53,7 @@ public class Entity : MonoBehaviour
 
     protected CustomAgent _customAgent;
     public CustomAgent CAgent => _customAgent;
-    
+
     protected StateMachine<Entity> _stateMachine;
     protected bool isGameFinish;
     protected RaycastHit[] _hitResult;
@@ -63,16 +64,20 @@ public class Entity : MonoBehaviour
     protected Vector2Int _groundIndex2D;
     public Vector2Int Index2D => _groundIndex2D;
 
+    [field: SerializeField] public WeaponHandler WeaponHandler { get; private set; }
+    [field: SerializeField] public Renderer Renderer { get; private set; }
+
     protected bool isInitialize;
     protected Ground _ground;
+
     public Ground Ground
     {
         get
         {
             if (_ground == null)
                 UpdateGroundIndex();
-            
-            return _ground;   
+
+            return _ground;
         }
     }
 
@@ -81,7 +86,7 @@ public class Entity : MonoBehaviour
 
     [SerializeField] private Transform _camPosition;
     public Transform CamPosition => _camPosition;
-    
+
     protected int _team;
     public int Team => _team;
 
@@ -103,6 +108,7 @@ public class Entity : MonoBehaviour
 
     private void OnDestroy()
     {
+        seq?.Kill();
         isInitialize = false;
     }
 
@@ -112,7 +118,7 @@ public class Entity : MonoBehaviour
         _hitResult = new RaycastHit[8];
         _animController.Play(AnimationController.AnimationType.Idle);
         _customAgent = new CustomAgent();
-        
+
         SetupInternalData();
     }
 
@@ -122,6 +128,11 @@ public class Entity : MonoBehaviour
         isInitialize = true;
         _animController.Initialize();
         _stateMachine.ChangeState(new StateIdle());
+    }
+
+    public void SetLookDirection(Vector3 lookDirection)
+    {
+        transform.forward = lookDirection;
     }
 
     public void GameOver()
@@ -145,9 +156,9 @@ public class Entity : MonoBehaviour
             _projectile = _unitSO._projectile,
             _projectileSpeed = _unitSO._projectileSpeed,
             listMovement = new List<Ground>(),
-            _AttackDirections =  _unitSO.attackDirection
+            _AttackDirections = _unitSO.attackDirection
         };
-        
+
         _customAgent.Speed = _unitSO._speed;
     }
 
@@ -155,7 +166,7 @@ public class Entity : MonoBehaviour
     {
         if (!isInitialize || isGameFinish)
             return;
-        
+
         UpdateGroundIndex();
         _customAgent?.Update();
         _stateMachine.OnUpdate();
@@ -167,10 +178,11 @@ public class Entity : MonoBehaviour
             _debugText += $"\n isStop: {_customAgent.IsStopped}";
             _debugText += $"\n{_customAgent.PathStatus}";
         }
-        
+
         _debugText += $"\nVelocity:{_customAgent.Velocity}";
         _debugText += $"\nforward:{transform.forward}";
         _debugText += $"\nState: {_stateMachine.CurrentState.ToString()}";
+        _debugText += $"\nLookDirection : {ConvertLookDirection(transform.forward)}";
 #endif
     }
 
@@ -191,11 +203,11 @@ public class Entity : MonoBehaviour
             case State.EnemyAttack:
                 _stateMachine.ChangeState(_stateEnemyAttack);
                 break;
-            
+
             case State.AllyAttack:
                 _stateMachine.ChangeState(_stateAllyAttack);
                 break;
-            
+
             case State.AllyRangeAttack:
                 _stateMachine.ChangeState(_stateAllyRangeAttack);
                 break;
@@ -236,7 +248,7 @@ public class Entity : MonoBehaviour
         _ground = newGround;
         _groundIndex1D = _ground.Index1D;
         _groundIndex2D = _ground.Index2D;
-        
+
         OnGroundChanged?.Invoke();
     }
 
@@ -272,6 +284,7 @@ public class Entity : MonoBehaviour
             return;
         }
 
+        DamageAnimation();
         OnDamaged?.Invoke();
     }
 
@@ -310,7 +323,7 @@ public class Entity : MonoBehaviour
         Entity res = null;
         foreach (var dir in t.UnitSO.attackDirection)
         {
-            Vector2Int index2D = t.UnitSO.CalculateGroundIndex(dir, t.Index2D);
+            Vector2Int index2D = t.UnitSO.CalculateGroundIndex(dir, t.Index2D, ConvertLookDirection(transform.forward.normalized));
             Ground ground = t.GameController.GetGround(index2D);
 
             if (ground == null)
@@ -339,5 +352,53 @@ public class Entity : MonoBehaviour
         }
 
         return false;
+    }
+
+    private Sequence seq;
+    private MaterialPropertyBlock mbp;
+
+    public void DamageAnimation()
+    {
+        if (mbp == null)
+            mbp = new MaterialPropertyBlock();
+
+        Color colorOG = Renderer.sharedMaterial.color;
+        mbp.SetColor("_Color", colorOG);
+
+        if (seq == null)
+        {
+            seq = DOTween.Sequence();
+            seq.SetAutoKill(false);
+            for (int i = 0; i < 1; i++)
+            {
+                seq.Insert(i * 0.125f, DOVirtual.Color(colorOG, Color.red, 0.125f, (color) =>
+                {
+                    mbp.SetColor("_Color", color);
+                    Renderer.SetPropertyBlock(mbp, 0);
+                }).SetEase(Ease.OutBack, 2f));
+
+                seq.Insert((i + 1) * 0.125f, DOVirtual.Color(Color.red, colorOG, 0.125f, (color) =>
+                {
+                    mbp.SetColor("_Color", color);
+                    Renderer.SetPropertyBlock(mbp, 0);
+                }));
+            }
+        }
+        else
+        {
+            seq.Complete();
+            seq.Restart();
+        }
+    }
+
+    private Vector3 ConvertLookDirection(Vector3 forward)
+    {
+        float x = Mathf.Abs(forward.x);
+        float z = Mathf.Abs(forward.z);
+
+        if (x >= z)
+            return new Vector3(1 * Mathf.Sign(forward.x), 0, 0);
+        else
+            return new Vector3(0, 1 * Mathf.Sign(forward.z), 0);
     }
 }

@@ -12,7 +12,7 @@ public class StateAttack : IState<Entity>
     protected bool isAttacking;
     protected bool isTriggered;
 
-    public void OnStateEnter(Entity t)
+    public virtual void OnStateEnter(Entity t)
     {
         if(t.GameController.GameState == GameController.State.End)
             return;
@@ -117,7 +117,8 @@ public class StateAttack : IState<Entity>
         transitionOnCounter = ent.UnitSO._duration;
     }
 
-    public void OnStateExit(Entity t)
+    public virtual void OnStateExit(Entity t)
     {
+        
     }
 }

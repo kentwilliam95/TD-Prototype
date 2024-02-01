@@ -8,11 +8,17 @@ public class StateEnemyRangeAttack : StateAttack
     private float walkCounter = 0;
     private bool isWalking;
 
+    public override void OnStateEnter(Entity t)
+    {
+        base.OnStateEnter(t);
+        ent.WeaponHandler.Equip(WeaponHandler.WeaponType.Range);
+    }
+
     protected override void OnAttackTrigger()
     {
         if (ent == null || ent.entityData._target == null)
             return;
-        
+
         isTriggered = true;
         Reset();
 
@@ -28,26 +34,29 @@ public class StateEnemyRangeAttack : StateAttack
         //TODO: Add check condition when arrived at destination
 
         base.UpdateState();
-        if (ent.entityData._target.IsDead)
-        {
-            ent.entityData._target = null;
-            if (ent is Enemy)
-                ent.ChangeState(Entity.State.Move);
-            else if (ent is Unit)
-                ent.ChangeState(Entity.State.Idle);
-        }
         
-        UpdateWalkState();
         UpdateStateToMove();
+
+        UpdateWalkState();
     }
 
     private void UpdateStateToMove()
     {
-        Entity enemy = ent.CheckIsEnemyOnTheSameGround(ent, Global.TEAMALLY);
-        if (enemy != null && !enemy.IsDead)
+        Entity enemy = ent.CheckIsEnemyOnTheSameGround(ent, ent.entityData.teamTarget);
+        Entity rangeEnemy = ent.CheckEnemyInRange(ent, ent.entityData.teamTarget);
+
+        if (ent.entityData._target.IsDead)
         {
-            ent.entityData._target = enemy;
-            ent.ChangeState(Entity.State.EnemyAttack);
+            ent.entityData._target = null;
+            ent.ChangeState(Entity.State.Move);
+            return;
+        }
+
+        if (!rangeEnemy)
+        {
+            ent.entityData._target = null;
+            ent.ChangeState(Entity.State.Move);
+            return;
         }
     }
 
@@ -111,5 +120,10 @@ public class StateEnemyRangeAttack : StateAttack
     protected override void DamageOtherEntity()
     {
         ent.entityData._target.Damage(ent.UnitSO._rdamage);
+    }
+
+    public override void OnStateExit(Entity t)
+    {
+        t.WeaponHandler.UnEquip(WeaponHandler.WeaponType.Range);
     }
 }
